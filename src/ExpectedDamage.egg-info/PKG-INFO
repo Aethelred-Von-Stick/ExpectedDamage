@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: ExpectedDamage
+Version: 0.0.1
+Summary: Estimate the damage caused by flooding at a risk given depth data over a postcode and a vulnerability curve.
+Home-page: https://github.com/Aethelred-Von-Stick/ExpectedDamage
+Author: Sam Hall
+Author-email: samwalkerhall@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Licence :: OSI Approved :: MIT Licence
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Expected Damage
+
+This package will calculate the expected damage to a risk given depth data and a vulnerability curve.
+
+
