@@ -1,0 +1,7 @@
+Finish test_read_files
+Put the data in a sensible place and make it use a fixed path. possibly put it in .local/share
+Put installation instructions into the README.md
+Move the venv out of the git repo
+Add git automation of tests https://www.youtube.com/watch?v=DhUpxWjOhME
+Add documentation to the tests
+
