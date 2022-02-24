@@ -1,7 +1,48 @@
+#!/usr/bin/env python3
+
 ## Program to estimate the cost of flooding on a risk in a
 ## specific postcode using depth data and a vulnerability curve.
 
+import argparse
+import errno
+import os
+import sys
 from numpy import genfromtxt, logical_and
+
+def get_args():
+    # Create parser to read input paths.
+    path_parser = argparse.ArgumentParser(prog='expected_damge',
+                                          description = 'Calculate the expected damage to a risk in a specific postcode')
+
+    # Add the arguments to be read in
+    path_parser.add_argument('depth', type = str, help = 'Path to the file containing depth data')
+    path_parser.add_argument('vulnerability', type = str, help = 'Path to the file containing the vulnerability curve')
+    path_parser.add_argument('innundated', type = float, help = 'The fraction of the postcode innundated with water. Must be a value between 0 and 1')
+
+    # Read the arguments to variablies
+    args = path_parser.parse_args()
+    depth_path = args.depth
+    vulnerability_path = args.vulnerability
+    innundated = args.innundated
+
+    # Check whether the paths given exist
+    depth_exists = os.path.isfile(depth_path)
+    vulnerability_exists = os.path.isfile(vulnerability_path)
+    if not depth_exists: 
+        raise FileNotFoundError(
+                os.strerror(errno.ENOENT), depth_path)
+        sys.exit()
+    elif not vulnerability_exists:
+        raise FileNotFoundError(
+                os.strerror(errno.ENOENT), vulnerability_path)
+        sys.exit()
+
+    # Check that the fraction innundated is between 0 and 1
+    if not 0 <= innundated <= 1:
+        raise ValueError('innundated must be between 0 and 1, not', innundated)
+        sys.exit()
+
+    return depth_path, vulnerability_path, innundated
 
 def read_files(depths_f, vuln_curve_f):
     # Generate numpy arrays from the depth and vulnerability curve files.
@@ -31,15 +72,10 @@ def find_damage(exp_depth, vuln_curve, quiet = True):
             print("The expected depth lies outwith the validity of the vulnerability curve. Using highest estimate of £" + format(Damage, "2f") + ".")
         return Damage
 
-
 def main():
-    # The paths to the data.
-    depths_file = '../data/depths.csv'
-    vulnerability_curve_file = '../data/vulnerability_curve.csv'
+    # Obtain the paths to the data and the fraction of the postcode innundated from the command line arguments.
+    depths_file, vulnerability_curve_file, fraction_inundated = get_args() 
 
-    # The fraction of the postcode area inundated by water.
-    fraction_inundated = 0.75
-    
     depths, vulnerability_curve = read_files(depths_file, vulnerability_curve_file)
     expected_depth = find_depth(depths, fraction_inundated)
     Damage = find_damage(expected_depth, vulnerability_curve, quiet = False)
